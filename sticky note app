@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Notes App</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>My Notes</h1>
+
+    <div class="add-note">
+        <input type="text" id="noteInput" placeholder="Write your note...">
+        <button onclick="addNote()">Add Note</button>
+    </div>
+
+    <ul id="notesList"></ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+body{
+    font-family: Arial;
+    background:#f4f4f4;
+    display:flex;
+    justify-content:center;
+    margin-top:50px;
+}
+
+.container{
+    background:white;
+    padding:20px;
+    width:400px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+}
+
+.add-note{
+    display:flex;
+    gap:10px;
+}
+
+#noteInput{
+    flex:1;
+    padding:8px;
+}
+
+button{
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+li{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    background:#eee;
+    padding:8px;
+    border-radius:5px;
+}
+
+.delete-btn{
+    background:red;
+    color:white;
+    border:none;
+    padding:5px 8px;
+    cursor:pointer;
+}
+let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+function displayNotes() {
+    const notesList = document.getElementById("notesList");
+    notesList.innerHTML = "";
+
+    notes.forEach((note, index) => {
+        let li = document.createElement("li");
+        li.innerHTML = `
+            ${note}
+            <button class="delete-btn" onclick="deleteNote(${index})">Delete</button>
+        `;
+        notesList.appendChild(li);
+    });
+}
+
+function addNote() {
+    const input = document.getElementById("noteInput");
+    const noteText = input.value.trim();
+
+    if(noteText === "") return;
+
+    notes.push(noteText);
+
+    localStorage.setItem("notes", JSON.stringify(notes));
+
+    input.value = "";
+    displayNotes();
+}
+
+function deleteNote(index) {
+    notes.splice(index, 1);
+
+    localStorage.setItem("notes", JSON.stringify(notes));
+
+    displayNotes();
+}
+
+displayNotes();
